@@ -1,10 +1,10 @@
-﻿using LinqToDB;
+﻿using Microsoft.EntityFrameworkCore;
 using _01_NguyenTuanMinh_4003867.Models;
 
 namespace _01_NguyenTuanMinh_4003867.Data
 {
     /// <summary>
-    /// Repository for LopQuanLy (Class) operations using LINQ to SQL
+    /// Repository for LopQuanLy (Class) operations
     /// </summary>
     public class LopQuanLyRepository
     {
@@ -37,13 +37,15 @@ namespace _01_NguyenTuanMinh_4003867.Data
         public bool Add(LopQuanLy lopQuanLy)
         {
             using var db = DatabaseHelper.GetDb();
-            return db.Insert(lopQuanLy) > 0;
+            db.LopQuanLys.Add(lopQuanLy);
+            return db.SaveChanges() > 0;
         }
 
         public bool Update(LopQuanLy lopQuanLy)
         {
             using var db = DatabaseHelper.GetDb();
-            return db.Update(lopQuanLy) > 0;
+            db.LopQuanLys.Update(lopQuanLy);
+            return db.SaveChanges() > 0;
         }
 
         public bool Delete(string lqLma)
@@ -59,7 +61,7 @@ namespace _01_NguyenTuanMinh_4003867.Data
 
             return db.LopQuanLys
                 .Where(l => l.LqLma == lqLma)
-                .Delete() > 0;
+                .ExecuteDelete() > 0;
         }
 
         public bool Exists(string lqLma)

@@ -1,4 +1,5 @@
-﻿using LinqToDB.Mapping;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace _01_NguyenTuanMinh_4003867.Models
 {
@@ -8,10 +9,14 @@ namespace _01_NguyenTuanMinh_4003867.Models
     [Table("tbl_taikhoan")]
     public class TaiKhoan
     {
-        [Column("tktaikhoan"), PrimaryKey]
+        [Key]
+        [Column("tktaikhoan")]
+        [MaxLength(30)]
         public string TkTaiKhoan { get; set; } = string.Empty;
 
+        [Required]
         [Column("tkmatkhau")]
+        [MaxLength(30)]
         public string TkMatKhau { get; set; } = string.Empty;
 
         [Column("nqma")]

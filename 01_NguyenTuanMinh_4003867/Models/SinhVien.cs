@@ -1,4 +1,5 @@
-﻿using LinqToDB.Mapping;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace _01_NguyenTuanMinh_4003867.Models
 {
@@ -11,23 +12,26 @@ namespace _01_NguyenTuanMinh_4003867.Models
         private string _svMa = string.Empty;
         private string _lqLma = string.Empty;
 
-        [Column("svma"), PrimaryKey]
+        [Key]
+        [Column("svma", TypeName = "nchar(10)")]
         public string SvMa
         {
             get => _svMa;
             set => _svMa = value?.Trim() ?? string.Empty;
         }
 
+        [Required]
         [Column("svten")]
+        [MaxLength(50)]
         public string SvTen { get; set; } = string.Empty;
 
-        [Column("svngaysinh")]
+        [Column("svngaysinh", TypeName = "date")]
         public DateTime? SvNgaySinh { get; set; }
 
         [Column("svgioitinh")]
         public byte? SvGioiTinhDb { get; set; }
 
-        [NotColumn]
+        [NotMapped]
         public bool? SvGioiTinh
         {
             get => SvGioiTinhDb.HasValue ? Convert.ToBoolean(SvGioiTinhDb.Value) : null;
@@ -35,9 +39,10 @@ namespace _01_NguyenTuanMinh_4003867.Models
         }
 
         [Column("svquequan")]
+        [MaxLength(50)]
         public string? SvQueQuan { get; set; }
 
-        [Column("lqlma")]
+        [Column("lqlma", TypeName = "nchar(10)")]
         public string LqLma
         {
             get => _lqLma;

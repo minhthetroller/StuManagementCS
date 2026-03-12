@@ -1,20 +1,25 @@
-﻿using LinqToDB.Mapping;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace _01_NguyenTuanMinh_4003867.Models
 {
     /// <summary>
-    /// Model representing a department (Nhóm quyền)
+    /// Model representing a permission group (Nhóm quyền)
     /// </summary>
     [Table("tbl_nhomquyen")]
     public class NhomQuyen
     {
-        [Column("nqma"), PrimaryKey, Identity]
+        [Key]
+        [Column("nqma")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int NqMa { get; set; }
 
+        [Required]
         [Column("nqten")]
+        [MaxLength(50)]
         public string NqTen { get; set; } = string.Empty;
 
-        [Column("nqmota")]
+        [Column("nqmota", TypeName = "nvarchar(max)")]
         public string? NqMoTa { get; set; }
 
         public NhomQuyen() { }
