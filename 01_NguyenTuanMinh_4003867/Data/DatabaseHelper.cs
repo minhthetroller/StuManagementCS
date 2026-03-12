@@ -13,10 +13,10 @@ namespace _01_NguyenTuanMinh_4003867.Data
     public class DatabaseHelper
     {
         private static string _connectionString = string.Empty;
-        private static string _serverAddress = "172.20.10.2";
-        private static string _username = "sa";
-        private static string _password = "Tam979hn@";
-        private static string _databaseName = "StudentManagement";
+        private static string _serverAddress = string.Empty;
+        private static string _username = string.Empty;
+        private static string _password = string.Empty;
+        private static string _databaseName = string.Empty;
 
         public static void Initialize()
         {

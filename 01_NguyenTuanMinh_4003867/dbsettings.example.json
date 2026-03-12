@@ -1,0 +1,6 @@
+{
+  "ServerAddress": "YOUR_SERVER_ADDRESS",
+  "Username": "YOUR_USERNAME",
+  "Password": "YOUR_PASSWORD",
+  "DatabaseName": "StudentManagement"
+}
