@@ -1,10 +1,10 @@
-﻿using LinqToDB;
+﻿using Microsoft.EntityFrameworkCore;
 using _01_NguyenTuanMinh_4003867.Models;
 
 namespace _01_NguyenTuanMinh_4003867.Data
 {
     /// <summary>
-    /// Repository for SinhVien (Student) operations using LINQ to SQL
+    /// Repository for SinhVien (Student) operations
     /// </summary>
     public class SinhVienRepository
     {
@@ -45,13 +45,15 @@ namespace _01_NguyenTuanMinh_4003867.Data
         public bool Add(SinhVien sinhVien)
         {
             using var db = DatabaseHelper.GetDb();
-            return db.Insert(sinhVien) > 0;
+            db.SinhViens.Add(sinhVien);
+            return db.SaveChanges() > 0;
         }
 
         public bool Update(SinhVien sinhVien)
         {
             using var db = DatabaseHelper.GetDb();
-            return db.Update(sinhVien) > 0;
+            db.SinhViens.Update(sinhVien);
+            return db.SaveChanges() > 0;
         }
 
         public bool Delete(string svMa)
@@ -59,7 +61,7 @@ namespace _01_NguyenTuanMinh_4003867.Data
             using var db = DatabaseHelper.GetDb();
             return db.SinhViens
                 .Where(s => s.SvMa == svMa)
-                .Delete() > 0;
+                .ExecuteDelete() > 0;
         }
 
         public bool Exists(string svMa)

@@ -1,10 +1,9 @@
-﻿using LinqToDB;
-using _01_NguyenTuanMinh_4003867.Models;
+﻿using _01_NguyenTuanMinh_4003867.Models;
 
 namespace _01_NguyenTuanMinh_4003867.Data
 {
     /// <summary>
-    /// Repository for TaiKhoan (Account) operations using LINQ to SQL
+    /// Repository for TaiKhoan (Account) operations
     /// </summary>
     public class TaiKhoanRepository
     {

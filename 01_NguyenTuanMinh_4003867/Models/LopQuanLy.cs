@@ -1,4 +1,5 @@
-﻿using LinqToDB.Mapping;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace _01_NguyenTuanMinh_4003867.Models
 {
@@ -10,14 +11,17 @@ namespace _01_NguyenTuanMinh_4003867.Models
     {
         private string _lqLma = string.Empty;
 
-        [Column("lqlma"), PrimaryKey]
+        [Key]
+        [Column("lqlma", TypeName = "nchar(10)")]
         public string LqLma
         {
             get => _lqLma;
             set => _lqLma = value?.Trim() ?? string.Empty;
         }
 
+        [Required]
         [Column("lqten")]
+        [MaxLength(50)]
         public string LqTen { get; set; } = string.Empty;
 
         [Column("lqkhoahoc")]
