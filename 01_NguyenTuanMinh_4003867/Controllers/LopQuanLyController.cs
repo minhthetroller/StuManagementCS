@@ -1,5 +1,7 @@
 ﻿using _01_NguyenTuanMinh_4003867.Data;
 using _01_NguyenTuanMinh_4003867.Models;
+using System.Globalization;
+using System.Text;
 
 namespace _01_NguyenTuanMinh_4003867.Controllers
 {
@@ -32,6 +34,8 @@ namespace _01_NguyenTuanMinh_4003867.Controllers
 
         public (bool success, string message) AddLopQuanLy(LopQuanLy lopQuanLy)
         {
+            lopQuanLy.LqLma = GenerateClassId(lopQuanLy.LqTen);
+
             // Validate input
             var validationResult = ValidateLopQuanLy(lopQuanLy);
             if (!validationResult.isValid)
@@ -49,6 +53,46 @@ namespace _01_NguyenTuanMinh_4003867.Controllers
             return result
                 ? (true, "Thêm lớp thành công!")
                 : (false, "Không thể thêm lớp. Vui lòng thử lại!");
+        }
+
+        public string GenerateClassId(string className)
+        {
+            var baseId = BuildClassIdBase(className);
+            if (string.IsNullOrWhiteSpace(baseId))
+            {
+                return string.Empty;
+            }
+
+            if (baseId.Length > 10)
+            {
+                baseId = baseId[..10];
+            }
+
+            var allIds = _repository.GetAllIds();
+            var existing = new HashSet<string>(allIds, StringComparer.OrdinalIgnoreCase);
+
+            if (!existing.Contains(baseId))
+            {
+                return baseId;
+            }
+
+            for (int i = 1; i <= 999; i++)
+            {
+                var suffix = i.ToString(CultureInfo.InvariantCulture);
+                var maxBaseLength = 10 - suffix.Length;
+                if (maxBaseLength <= 0)
+                {
+                    break;
+                }
+
+                var candidate = $"{baseId[..Math.Min(baseId.Length, maxBaseLength)]}{suffix}";
+                if (!existing.Contains(candidate))
+                {
+                    return candidate;
+                }
+            }
+
+            return baseId;
         }
 
         public (bool success, string message) UpdateLopQuanLy(LopQuanLy lopQuanLy)
@@ -130,6 +174,58 @@ namespace _01_NguyenTuanMinh_4003867.Controllers
             }
 
             return (true, string.Empty);
+        }
+
+        private static string BuildClassIdBase(string className)
+        {
+            if (string.IsNullOrWhiteSpace(className))
+            {
+                return string.Empty;
+            }
+
+            var normalized = RemoveDiacritics(className).Trim();
+            var parts = normalized
+                .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+            var builder = new StringBuilder();
+
+            foreach (var part in parts)
+            {
+                if (part.Any(char.IsDigit))
+                {
+                    builder.Append(part.ToUpperInvariant());
+                }
+                else
+                {
+                    var firstLetter = part.FirstOrDefault(char.IsLetter);
+                    if (firstLetter != default)
+                    {
+                        builder.Append(char.ToUpperInvariant(firstLetter));
+                    }
+                }
+            }
+
+            return builder.ToString();
+        }
+
+        private static string RemoveDiacritics(string value)
+        {
+            var normalized = value.Normalize(NormalizationForm.FormD);
+            var builder = new StringBuilder();
+
+            foreach (var c in normalized)
+            {
+                if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+                {
+                    builder.Append(c);
+                }
+            }
+
+            return builder
+                .ToString()
+                .Normalize(NormalizationForm.FormC)
+                .Replace('đ', 'd')
+                .Replace('Đ', 'D');
         }
     }
 }

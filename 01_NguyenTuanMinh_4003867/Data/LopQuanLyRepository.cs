@@ -77,5 +77,13 @@ namespace _01_NguyenTuanMinh_4003867.Data
             return db.SinhViens
                 .Count(s => s.LqLma == lqLma);
         }
+
+        public List<string> GetAllIds()
+        {
+            using var db = DatabaseHelper.GetDb();
+            return db.LopQuanLys
+                .Select(l => l.LqLma)
+                .ToList();
+        }
     }
 }

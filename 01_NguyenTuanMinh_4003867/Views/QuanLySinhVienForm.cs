@@ -15,6 +15,7 @@ namespace _01_NguyenTuanMinh_4003867.Views
             InitializeComponent();
             _controller = new SinhVienController();
             _lopController = new LopQuanLyController();
+            txtMaSinhVien.ReadOnly = true;
         }
 
         private void QuanLySinhVienForm_Load(object sender, EventArgs e)
@@ -36,9 +37,7 @@ namespace _01_NguyenTuanMinh_4003867.Views
                 cboLop.DataSource = classes;
                 cboLop.DisplayMember = "LqTen";
                 cboLop.ValueMember = "LqLma";
-                
-                if (cboLop.Items.Count > 0)
-                    cboLop.SelectedIndex = 0;
+                cboLop.SelectedIndex = -1;
             }
             catch (Exception ex)
             {
@@ -127,7 +126,6 @@ namespace _01_NguyenTuanMinh_4003867.Views
                 
                 if (originalData != null)
                 {
-                    // If clicking on the same student, deselect
                     if (_lastSelectedStudentId == originalData.SvMa)
                     {
                         dgvSinhVien.ClearSelection();
@@ -179,7 +177,7 @@ namespace _01_NguyenTuanMinh_4003867.Views
                 var row = dgvSinhVien.SelectedRows[0];
                 var originalData = row.DataBoundItem?.GetType().GetProperty("OriginalData")?.GetValue(row.DataBoundItem, null) as SinhVien;
                 
-                if (originalData != null && _lastSelectedStudentId != originalData.SvMa)
+                if (originalData != null)
                 {
                     txtMaSinhVien.Text = originalData.SvMa;
                     txtTenSinhVien.Text = originalData.SvTen;
@@ -206,18 +204,13 @@ namespace _01_NguyenTuanMinh_4003867.Views
                     txtQueQuan.Text = originalData.SvQueQuan ?? "";
                     cboLop.SelectedValue = originalData.LqLma;
 
+                    _lastSelectedStudentId = originalData.SvMa;
                     _isEditMode = true;
-                    txtMaSinhVien.Enabled = false;
                 }
             }
             else
             {
-                // When nothing is selected, enable add mode
-                if (!_isEditMode || string.IsNullOrEmpty(txtMaSinhVien.Text))
-                {
-                    txtMaSinhVien.Enabled = true;
-                    _isEditMode = false;
-                }
+                ClearInputs();
             }
         }
 
@@ -334,14 +327,6 @@ namespace _01_NguyenTuanMinh_4003867.Views
 
         private bool ValidateInput()
         {
-            if (string.IsNullOrWhiteSpace(txtMaSinhVien.Text))
-            {
-                MessageBox.Show("Vui lòng nhập mã sinh viên!", "Thông báo",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtMaSinhVien.Focus();
-                return false;
-            }
-
             if (string.IsNullOrWhiteSpace(txtTenSinhVien.Text))
             {
                 MessageBox.Show("Vui lòng nhập tên sinh viên!", "Thông báo",
@@ -363,17 +348,15 @@ namespace _01_NguyenTuanMinh_4003867.Views
 
         private void ClearInputs()
         {
-            txtMaSinhVien.Clear();
+            txtMaSinhVien.Text = _controller.GenerateNextStudentId();
             txtTenSinhVien.Clear();
             txtQueQuan.Clear();
             dtpNgaySinh.Value = DateTime.Now;
             rdNam.Checked = true;
-            if (cboLop.Items.Count > 0)
-                cboLop.SelectedIndex = 0;
-            txtMaSinhVien.Enabled = true;
+            cboLop.SelectedIndex = -1;
             _isEditMode = false;
             _lastSelectedStudentId = null;
-            txtMaSinhVien.Focus();
+            txtTenSinhVien.Focus();
         }
     }
 }
