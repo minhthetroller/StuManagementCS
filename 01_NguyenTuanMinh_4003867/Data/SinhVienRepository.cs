@@ -70,5 +70,13 @@ namespace _01_NguyenTuanMinh_4003867.Data
             return db.SinhViens
                 .Any(s => s.SvMa == svMa);
         }
+
+        public List<string> GetAllIds()
+        {
+            using var db = DatabaseHelper.GetDb();
+            return db.SinhViens
+                .Select(s => s.SvMa)
+                .ToList();
+        }
     }
 }

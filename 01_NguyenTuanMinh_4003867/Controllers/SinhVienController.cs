@@ -1,5 +1,6 @@
 ﻿using _01_NguyenTuanMinh_4003867.Data;
 using _01_NguyenTuanMinh_4003867.Models;
+using System.Globalization;
 
 namespace _01_NguyenTuanMinh_4003867.Controllers
 {
@@ -34,6 +35,8 @@ namespace _01_NguyenTuanMinh_4003867.Controllers
 
         public (bool success, string message) AddSinhVien(SinhVien sinhVien)
         {
+            sinhVien.SvMa = GenerateNextStudentId();
+
             // Validate input
             var validationResult = ValidateSinhVien(sinhVien);
             if (!validationResult.isValid)
@@ -55,8 +58,45 @@ namespace _01_NguyenTuanMinh_4003867.Controllers
 
             bool result = _repository.Add(sinhVien);
             return result
-                ? (true, "Thêm sinh viên thành công!")
+                ? (true, $"Thêm sinh viên thành công! Mã sinh viên: {sinhVien.SvMa}")
                 : (false, "Không thể thêm sinh viên. Vui lòng thử lại!");
+        }
+
+        public string GenerateNextStudentId()
+        {
+            var allIds = _repository.GetAllIds();
+            var maxNumber = 0;
+
+            foreach (var id in allIds)
+            {
+                if (string.IsNullOrWhiteSpace(id))
+                {
+                    continue;
+                }
+
+                var trimmed = id.Trim();
+                if (trimmed.Length <= 2 || !trimmed.StartsWith("SV", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                var suffix = trimmed[2..];
+                if (int.TryParse(suffix, NumberStyles.None, CultureInfo.InvariantCulture, out var number) && number > maxNumber)
+                {
+                    maxNumber = number;
+                }
+            }
+
+            var candidate = maxNumber + 1;
+            var candidateId = $"SV{candidate:D3}";
+
+            while (_repository.Exists(candidateId))
+            {
+                candidate++;
+                candidateId = $"SV{candidate:D3}";
+            }
+
+            return candidateId;
         }
 
         public (bool success, string message) UpdateSinhVien(SinhVien sinhVien)

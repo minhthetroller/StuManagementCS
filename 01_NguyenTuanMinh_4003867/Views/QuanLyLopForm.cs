@@ -12,15 +12,16 @@ namespace _01_NguyenTuanMinh_4003867.Views
         {
             InitializeComponent();
             _controller = new LopQuanLyController();
+            txtMaLop.ReadOnly = true;
+            txtTenLop.TextChanged += txtTenLop_TextChanged;
         }
 
         private void QuanLyLopForm_Load(object sender, EventArgs e)
         {
             LoadData();
             SetupDataGridView();
-            
-            // Allow clicking on empty space to deselect
             dgvLop.ClearSelection();
+            ClearInputs();
         }
 
         private void SetupDataGridView()
@@ -91,22 +92,26 @@ namespace _01_NguyenTuanMinh_4003867.Views
                 var lop = dgvLop.SelectedRows[0].DataBoundItem as LopQuanLy;
                 if (lop != null)
                 {
+                    _isEditMode = true;
                     txtMaLop.Text = lop.LqLma;
                     txtTenLop.Text = lop.LqTen;
                     txtKhoaHoc.Value = lop.LqKhoaHoc;
-                    _isEditMode = true;
-                    txtMaLop.Enabled = false;
                 }
             }
             else
             {
-                // When nothing is selected, enable add mode
-                if (!_isEditMode || string.IsNullOrEmpty(txtMaLop.Text))
-                {
-                    txtMaLop.Enabled = true;
-                    _isEditMode = false;
-                }
+                ClearInputs();
             }
+        }
+
+        private void txtTenLop_TextChanged(object? sender, EventArgs e)
+        {
+            if (_isEditMode)
+            {
+                return;
+            }
+
+            txtMaLop.Text = _controller.GenerateClassId(txtTenLop.Text.Trim());
         }
 
         private void btnThem_Click(object sender, EventArgs e)
@@ -215,17 +220,17 @@ namespace _01_NguyenTuanMinh_4003867.Views
 
         private bool ValidateInput()
         {
-            if (string.IsNullOrWhiteSpace(txtMaLop.Text))
-            {
-                MessageBox.Show("Vui lòng nhập mã lớp!", "Thông báo",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtMaLop.Focus();
-                return false;
-            }
-
             if (string.IsNullOrWhiteSpace(txtTenLop.Text))
             {
                 MessageBox.Show("Vui lòng nhập tên lớp!", "Thông báo",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtTenLop.Focus();
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtMaLop.Text))
+            {
+                MessageBox.Show("Không thể tạo mã lớp tự động từ tên lớp. Vui lòng nhập tên lớp hợp lệ!", "Thông báo",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtTenLop.Focus();
                 return false;
@@ -239,9 +244,8 @@ namespace _01_NguyenTuanMinh_4003867.Views
             txtMaLop.Clear();
             txtTenLop.Clear();
             txtKhoaHoc.Value = DateTime.Now.Year;
-            txtMaLop.Enabled = true;
             _isEditMode = false;
-            txtMaLop.Focus();
+            txtTenLop.Focus();
         }
     }
 }
