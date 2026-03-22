@@ -78,5 +78,21 @@ namespace _01_NguyenTuanMinh_4003867.Data
                 .Select(s => s.SvMa)
                 .ToList();
         }
+
+        public int GetCount()
+        {
+            using var db = DatabaseHelper.GetDb();
+            return db.SinhViens.Count();
+        }
+
+        public List<SinhVien> GetPage(int pageIndex, int pageSize)
+        {
+            using var db = DatabaseHelper.GetDb();
+            return db.SinhViens
+                .OrderBy(s => s.SvMa)
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize)
+                .ToList();
+        }
     }
 }

@@ -9,9 +9,15 @@ namespace _01_NguyenTuanMinh_4003867.Views
         private readonly LopQuanLyController _lopController;
         private bool _isEditMode = false;
         private string? _lastSelectedStudentId = null;
+        private int _currentPage = 0;
+        private int _pageSize = 15;
+        private int _totalCount = 0;
+        private readonly System.Windows.Forms.Timer _resizeTimer;
 
         public QuanLySinhVienForm()
         {
+            _resizeTimer = new System.Windows.Forms.Timer { Interval = 250 };
+            _resizeTimer.Tick += ResizeTimer_Tick;
             InitializeComponent();
             _controller = new SinhVienController();
             _lopController = new LopQuanLyController();
@@ -22,8 +28,9 @@ namespace _01_NguyenTuanMinh_4003867.Views
         {
             LoadClasses();
             SetupDataGridView();
-            LoadData();
-            
+            _pageSize = CalculatePageSize();
+            LoadPagedData();
+
             // Don't auto-select any student - leave fields empty
             dgvSinhVien.ClearSelection();
             ClearInputs();
@@ -49,6 +56,7 @@ namespace _01_NguyenTuanMinh_4003867.Views
         private void SetupDataGridView()
         {
             dgvSinhVien.AutoGenerateColumns = false;
+            dgvSinhVien.ScrollBars = ScrollBars.None;
             dgvSinhVien.Columns.Clear();
 
             dgvSinhVien.Columns.Add(new DataGridViewTextBoxColumn
@@ -141,14 +149,14 @@ namespace _01_NguyenTuanMinh_4003867.Views
             }
         }
 
-        private void LoadData()
+        private void LoadPagedData()
         {
             try
             {
-                var sinhViens = _controller.GetAllSinhViens();
-                
-                // Format gender display
-                var displayList = sinhViens.Select(sv => new
+                var (items, total) = _controller.GetSinhVienPage(_currentPage, _pageSize);
+                _totalCount = total;
+
+                var displayList = items.Select(sv => new
                 {
                     sv.SvMa,
                     sv.SvTen,
@@ -162,12 +170,82 @@ namespace _01_NguyenTuanMinh_4003867.Views
                 dgvSinhVien.DataSource = displayList;
                 dgvSinhVien.ClearSelection();
                 _lastSelectedStudentId = null;
+                UpdatePaginationControls();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi tải dữ liệu: {ex.Message}", "Lỗi",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void UpdatePaginationControls()
+        {
+            int totalPages = _pageSize > 0 ? (int)Math.Ceiling((double)_totalCount / _pageSize) : 1;
+            if (totalPages < 1) totalPages = 1;
+            lblPageInfo.Text = $"Trang {_currentPage + 1} / {totalPages} | Tổng: {_totalCount} sinh viên";
+            btnFirst.Enabled = _currentPage > 0;
+            btnPrev.Enabled = _currentPage > 0;
+            btnNext.Enabled = _currentPage < totalPages - 1;
+            btnLast.Enabled = _currentPage < totalPages - 1;
+        }
+
+        private int CalculatePageSize()
+        {
+            int rowHeight = Math.Max(1, dgvSinhVien.RowTemplate.Height);
+            int headerHeight = dgvSinhVien.ColumnHeadersHeight > 0 ? dgvSinhVien.ColumnHeadersHeight : rowHeight;
+            int available = dgvSinhVien.ClientSize.Height - headerHeight;
+            return Math.Max(1, available / rowHeight);
+        }
+
+        private void ResizeTimer_Tick(object? sender, EventArgs e)
+        {
+            _resizeTimer.Stop();
+            int newSize = CalculatePageSize();
+            if (newSize != _pageSize)
+            {
+                _pageSize = newSize;
+                _currentPage = 0;
+                LoadPagedData();
+            }
+        }
+
+        private void QuanLySinhVienForm_SizeChanged(object sender, EventArgs e)
+        {
+            _resizeTimer?.Stop();
+            _resizeTimer?.Start();
+        }
+
+        private void btnFirst_Click(object sender, EventArgs e)
+        {
+            _currentPage = 0;
+            LoadPagedData();
+        }
+
+        private void btnPrev_Click(object sender, EventArgs e)
+        {
+            if (_currentPage > 0)
+            {
+                _currentPage--;
+                LoadPagedData();
+            }
+        }
+
+        private void btnNext_Click(object sender, EventArgs e)
+        {
+            int totalPages = (int)Math.Ceiling((double)_totalCount / _pageSize);
+            if (_currentPage < totalPages - 1)
+            {
+                _currentPage++;
+                LoadPagedData();
+            }
+        }
+
+        private void btnLast_Click(object sender, EventArgs e)
+        {
+            int totalPages = (int)Math.Ceiling((double)_totalCount / _pageSize);
+            _currentPage = Math.Max(0, totalPages - 1);
+            LoadPagedData();
         }
 
         private void dgvSinhVien_SelectionChanged(object sender, EventArgs e)
@@ -235,7 +313,8 @@ namespace _01_NguyenTuanMinh_4003867.Views
             {
                 MessageBox.Show(result.message, "Thành công",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
-                LoadData();
+                _currentPage = 0;
+                LoadPagedData();
                 ClearInputs();
             }
             else
@@ -273,7 +352,7 @@ namespace _01_NguyenTuanMinh_4003867.Views
             {
                 MessageBox.Show(result.message, "Thành công",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
-                LoadData();
+                LoadPagedData();
                 ClearInputs();
             }
             else
@@ -306,7 +385,8 @@ namespace _01_NguyenTuanMinh_4003867.Views
                 {
                     MessageBox.Show(result.message, "Thành công",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    LoadData();
+                    _currentPage = 0;
+                    LoadPagedData();
                     ClearInputs();
                 }
                 else
@@ -322,7 +402,8 @@ namespace _01_NguyenTuanMinh_4003867.Views
             dgvSinhVien.ClearSelection();
             _lastSelectedStudentId = null;
             ClearInputs();
-            LoadData();
+            _currentPage = 0;
+            LoadPagedData();
         }
 
         private bool ValidateInput()

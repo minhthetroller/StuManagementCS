@@ -22,6 +22,13 @@ namespace _01_NguyenTuanMinh_4003867.Controllers
             return _repository.GetAll();
         }
 
+        public (List<LopQuanLy> items, int totalCount) GetLopQuanLyPage(int pageIndex, int pageSize)
+        {
+            int total = _repository.GetCount();
+            var items = _repository.GetPage(pageIndex, pageSize);
+            return (items, total);
+        }
+
         public LopQuanLy? GetLopQuanLyById(string lqLma)
         {
             return _repository.GetById(lqLma);

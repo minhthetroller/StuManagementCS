@@ -23,6 +23,13 @@ namespace _01_NguyenTuanMinh_4003867.Controllers
             return _repository.GetAll();
         }
 
+        public (List<SinhVien> items, int totalCount) GetSinhVienPage(int pageIndex, int pageSize)
+        {
+            int total = _repository.GetCount();
+            var items = _repository.GetPage(pageIndex, pageSize);
+            return (items, total);
+        }
+
         public SinhVien? GetSinhVienById(string svMa)
         {
             return _repository.GetById(svMa);

@@ -38,10 +38,17 @@
             btnThem = new Button();
             grpDanhSach = new GroupBox();
             dgvLop = new DataGridView();
+            pnlPagination = new Panel();
+            btnFirst = new Button();
+            btnPrev = new Button();
+            lblPageInfo = new Label();
+            btnNext = new Button();
+            btnLast = new Button();
             grpThongTin.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)txtKhoaHoc).BeginInit();
             grpChucNang.SuspendLayout();
             grpDanhSach.SuspendLayout();
+            pnlPagination.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvLop).BeginInit();
             SuspendLayout();
             // 
@@ -174,6 +181,7 @@
             // grpDanhSach
             // 
             grpDanhSach.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            grpDanhSach.Controls.Add(pnlPagination);
             grpDanhSach.Controls.Add(dgvLop);
             grpDanhSach.Location = new Point(12, 254);
             grpDanhSach.Name = "grpDanhSach";
@@ -199,6 +207,70 @@
             dgvLop.TabIndex = 0;
             dgvLop.SelectionChanged += dgvLop_SelectionChanged;
             // 
+            // pnlPagination
+            // 
+            pnlPagination.Controls.Add(btnLast);
+            pnlPagination.Controls.Add(btnNext);
+            pnlPagination.Controls.Add(lblPageInfo);
+            pnlPagination.Controls.Add(btnPrev);
+            pnlPagination.Controls.Add(btnFirst);
+            pnlPagination.Dock = DockStyle.Bottom;
+            pnlPagination.Name = "pnlPagination";
+            pnlPagination.Size = new Size(1154, 45);
+            pnlPagination.TabIndex = 1;
+            // 
+            // btnFirst
+            // 
+            btnFirst.Location = new Point(5, 7);
+            btnFirst.Name = "btnFirst";
+            btnFirst.Size = new Size(40, 30);
+            btnFirst.TabIndex = 0;
+            btnFirst.Text = "\u00ab";
+            btnFirst.UseVisualStyleBackColor = true;
+            btnFirst.Click += btnFirst_Click;
+            // 
+            // btnPrev
+            // 
+            btnPrev.Location = new Point(50, 7);
+            btnPrev.Name = "btnPrev";
+            btnPrev.Size = new Size(40, 30);
+            btnPrev.TabIndex = 1;
+            btnPrev.Text = "\u2039";
+            btnPrev.UseVisualStyleBackColor = true;
+            btnPrev.Click += btnPrev_Click;
+            // 
+            // lblPageInfo
+            // 
+            lblPageInfo.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            lblPageInfo.Location = new Point(95, 12);
+            lblPageInfo.Name = "lblPageInfo";
+            lblPageInfo.Size = new Size(964, 20);
+            lblPageInfo.TabIndex = 2;
+            lblPageInfo.Text = "Trang 1 / 1 | T\u1ed5ng: 0";
+            lblPageInfo.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // btnNext
+            // 
+            btnNext.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnNext.Location = new Point(1064, 7);
+            btnNext.Name = "btnNext";
+            btnNext.Size = new Size(40, 30);
+            btnNext.TabIndex = 3;
+            btnNext.Text = "\u203a";
+            btnNext.UseVisualStyleBackColor = true;
+            btnNext.Click += btnNext_Click;
+            // 
+            // btnLast
+            // 
+            btnLast.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnLast.Location = new Point(1109, 7);
+            btnLast.Name = "btnLast";
+            btnLast.Size = new Size(40, 30);
+            btnLast.TabIndex = 4;
+            btnLast.Text = "\u00bb";
+            btnLast.UseVisualStyleBackColor = true;
+            btnLast.Click += btnLast_Click;
+            // 
             // QuanLyLopForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
@@ -208,12 +280,14 @@
             Controls.Add(grpChucNang);
             Controls.Add(grpThongTin);
             Name = "QuanLyLopForm";
-            Text = "Quản lý lớp";
+            Text = "Qu\u1ea3n l\u00fd l\u1edbp";
             Load += QuanLyLopForm_Load;
+            SizeChanged += QuanLyLopForm_SizeChanged;
             grpThongTin.ResumeLayout(false);
             grpThongTin.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)txtKhoaHoc).EndInit();
             grpChucNang.ResumeLayout(false);
+            pnlPagination.ResumeLayout(false);
             grpDanhSach.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dgvLop).EndInit();
             ResumeLayout(false);
@@ -235,5 +309,11 @@
         private Button btnLamMoi;
         private GroupBox grpDanhSach;
         private DataGridView dgvLop;
+        private Panel pnlPagination;
+        private Button btnFirst;
+        private Button btnPrev;
+        private Label lblPageInfo;
+        private Button btnNext;
+        private Button btnLast;
     }
 }

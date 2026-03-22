@@ -20,11 +20,11 @@ namespace _01_NguyenTuanMinh_4003867.Models
         }
 
         [Required]
-        [Column("lqten")]
+        [Column("lqlten")]
         [MaxLength(50)]
         public string LqTen { get; set; } = string.Empty;
 
-        [Column("lqkhoahoc")]
+        [Column("lqlkhoahoc")]
         public int LqKhoaHoc { get; set; }
 
         public LopQuanLy() { }

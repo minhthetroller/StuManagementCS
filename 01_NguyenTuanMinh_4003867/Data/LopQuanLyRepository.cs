@@ -85,5 +85,21 @@ namespace _01_NguyenTuanMinh_4003867.Data
                 .Select(l => l.LqLma)
                 .ToList();
         }
+
+        public int GetCount()
+        {
+            using var db = DatabaseHelper.GetDb();
+            return db.LopQuanLys.Count();
+        }
+
+        public List<LopQuanLy> GetPage(int pageIndex, int pageSize)
+        {
+            using var db = DatabaseHelper.GetDb();
+            return db.LopQuanLys
+                .OrderBy(l => l.LqLma)
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize)
+                .ToList();
+        }
     }
 }
