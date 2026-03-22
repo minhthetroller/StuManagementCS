@@ -76,8 +76,8 @@ Schema được quản lý hoàn toàn bởi Entity Framework Core thông qua `E
 | Cột | Kiểu | Ghi chú |
 |-----|------|---------|
 | `lqlma` | `NCHAR(10)` | Khóa chính |
-| `lqten` | `NVARCHAR(50)` | Tên lớp |
-| `lqkhoahoc` | `INT` | Khóa học |
+| `lqlten` | `NVARCHAR(50)` | Tên lớp |
+| `lqlkhoahoc` | `INT` | Khóa học |
 
 ### Bảng tbl_sinhvien (Sinh viên)
 | Cột | Kiểu | Ghi chú |
